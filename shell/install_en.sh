@@ -170,6 +170,7 @@ initVar() {
 
 	# random path
 	customPath=
+	customPath1=
 
 	# centos version
 	centosVersion=
@@ -1394,6 +1395,7 @@ randomPathFunction() {
 
 	if [[ "${historyPathStatus}" == "y" ]]; then
 		customPath=${currentPath}
+		customPath1=${currentPath1}
 		echoContent green " ---> Use successfully\n"
 	else
 		echoContent yellow "Please enter a custom path [example: alone], no slashes required, [enter] random path"
@@ -1401,14 +1403,18 @@ randomPathFunction() {
 
 		if [[ -z "${customPath}" ]]; then
 			customPath=$(head -n 50 /dev/urandom | sed 's/[^a-z]//g' | strings -n 4 | tr '[:upper:]' '[:lower:]' | head -1)
+			customPath1=$(head -n 50 /dev/urandom | sed 's/[^a-z]//g' | strings -n 4 | tr '[:upper:]' '[:lower:]' | head -1)
 			currentPath=${customPath:0:4}
 			customPath=${currentPath}
+			customPath1=${currentPath1}
 		else
 			currentPath=${customPath}
+			customPath1=${currentPath1}
 		fi
 
 	fi
 	echoContent yellow "\n path:${currentPath}"
+	echoContent yellow "\n path:${currentPath1}"
 	echoContent skyBlue "\n----------------------------"
 }
 # Nginx Camouflage Blog
@@ -2499,7 +2505,7 @@ EOF
 
 	# VMess_WS
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'vws","dest":31299,"xver":1}'
+		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","path":"/'${customPath1}'","dest":31299,"xver":1}'
 
 		getClients "${configPath}../tmp/05_VMess_WS_inbounds.json" "${addClientsStatus}"
 
@@ -2517,7 +2523,7 @@ EOF
         "id": "${uuid}",
         "alterId": 0,
         "add": "${add}",
-        "email": "${domain}_${uuid}"
+        "email": "${domain}"
       }
     ]
   },
@@ -2526,7 +2532,8 @@ EOF
     "security": "none",
     "wsSettings": {
       "acceptProxyProtocol": true,
-      "path": "/${customPath}vws"
+      "path": "/${customPath}",
+	  "path": "/${customPath1}"
     }
   }
 }
@@ -2912,7 +2919,7 @@ EOF
 
 	# VMess_WS
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'vws","dest":31299,"xver":1}'
+		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","path":"/'${customPath1}'","dest":31299,"xver":1}'
 		getClients "${configPath}../tmp/05_VMess_WS_inbounds.json" "${addClientsStatus}"
 		cat <<EOF >/etc/v2ray-agent/xray/conf/05_VMess_WS_inbounds.json
 {
@@ -2937,7 +2944,8 @@ EOF
     "security": "none",
     "wsSettings": {
       "acceptProxyProtocol": true,
-      "path": "/${customPath}vws"
+      "path": "/${customPath}",
+	  "path": "/${customPath1}"
     }
   }
 }
@@ -3177,11 +3185,11 @@ EOF
 		echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=trojan%3A%2F%2F${id}%40${currentHost}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dxtls%26type%3Dtcp%26${currentHost}%3D${currentHost}%26headerType%3Dnone%26sni%3D${currentHost}%26flow%3Dxtls-rprx-splice%23${email/direct/splice}\n"
 
 	elif [[ "${type}" == "vmessws" ]]; then
-		qrCodeBase64Default=$(echo -n "{\"port\":${currentDefaultPort},\"ps\":\"${email}\",\"tls\":\"tls\",\"id\":\"${id}\",\"aid\":0,\"v\":2,\"host\":\"${currentHost}\",\"type\":\"none\",\"path\":\"/${currentPath}vws\",\"net\":\"ws\",\"add\":\"${currentAdd}\",\"allowInsecure\":0,\"method\":\"none\",\"peer\":\"${currentHost}\",\"sni\":\"${currentHost}\"}" | base64 -w 0)
+		qrCodeBase64Default=$(echo -n "{\"port\":${currentDefaultPort},\"ps\":\"${email}\",\"tls\":\"tls\",\"id\":\"${id}\",\"aid\":0,\"v\":2,\"host\":\"${currentHost}\",\"type\":\"none\",\"path\":\"/${currentPath}\",\"net\":\"ws\",\"add\":\"${currentAdd}\",\"allowInsecure\":0,\"method\":\"none\",\"peer\":\"${currentHost}\",\"sni\":\"${currentHost}\"}" | base64 -w 0)
 		qrCodeBase64Default="${qrCodeBase64Default// /}"
 
 		echoContent yellow " ---> 通用json(VMess+WS+TLS)"
-		echoContent green "    {\"port\":${currentDefaultPort},\"ps\":\"${email}\",\"tls\":\"tls\",\"id\":\"${id}\",\"aid\":0,\"v\":2,\"host\":\"${currentHost}\",\"type\":\"none\",\"path\":\"/${currentPath}vws\",\"net\":\"ws\",\"add\":\"${currentAdd}\",\"allowInsecure\":0,\"method\":\"none\",\"peer\":\"${currentHost}\",\"sni\":\"${currentHost}\"}\n"
+		echoContent green "    {\"port\":${currentDefaultPort},\"ps\":\"${email}\",\"tls\":\"tls\",\"id\":\"${id}\",\"aid\":0,\"v\":2,\"host\":\"${currentHost}\",\"type\":\"none\",\"path\":\"/${currentPath}\",\"net\":\"ws\",\"add\":\"${currentAdd}\",\"allowInsecure\":0,\"method\":\"none\",\"peer\":\"${currentHost}\",\"sni\":\"${currentHost}\"}\n"
 		echoContent yellow "---> Generic vmess(VMess+WS+TLS) link"
 		echoContent green "    vmess://${qrCodeBase64Default}\n"
 		echoContent yellow " ---> QR code vmess(VMess+WS+TLS)"
@@ -3325,9 +3333,9 @@ showAccounts() {
 		# VMess WS
 		if echo ${currentInstallProtocolType} | grep -q 3; then
 			echoContent skyBlue "\n================================ VMess WS TLS CDN ================================\n"
-			local path="${currentPath}vws"
+			local path="${currentPath}"
 			if [[ ${coreInstallType} == "1" ]]; then
-				path="${currentPath}vws"
+				path="${currentPath}"
 			fi
 			jq .inbounds[0].settings.clients ${configPath}05_VMess_WS_inbounds.json | jq -c '.[]' | while read -r user; do
 				local email=
