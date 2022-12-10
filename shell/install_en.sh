@@ -170,7 +170,6 @@ initVar() {
 
 	# random path
 	customPath=
-	customPath1=
 
 	# centos version
 	centosVersion=
@@ -1395,7 +1394,6 @@ randomPathFunction() {
 
 	if [[ "${historyPathStatus}" == "y" ]]; then
 		customPath=${currentPath}
-		customPath1=${currentPath1}
 		echoContent green " ---> Use successfully\n"
 	else
 		echoContent yellow "Please enter a custom path [example: alone], no slashes required, [enter] random path"
@@ -1403,18 +1401,14 @@ randomPathFunction() {
 
 		if [[ -z "${customPath}" ]]; then
 			customPath=$(head -n 50 /dev/urandom | sed 's/[^a-z]//g' | strings -n 4 | tr '[:upper:]' '[:lower:]' | head -1)
-			customPath1=$(head -n 50 /dev/urandom | sed 's/[^a-z]//g' | strings -n 4 | tr '[:upper:]' '[:lower:]' | head -1)
 			currentPath=${customPath:0:4}
 			customPath=${currentPath}
-			customPath1=${currentPath1}
 		else
 			currentPath=${customPath}
-			customPath1=${currentPath1}
 		fi
 
 	fi
 	echoContent yellow "\n path:${currentPath}"
-	echoContent yellow "\n path:${currentPath1}"
 	echoContent skyBlue "\n----------------------------"
 }
 # Nginx Camouflage Blog
@@ -2505,7 +2499,7 @@ EOF
 
 	# VMess_WS
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","path":"/'${customPath1}'","dest":31299,"xver":1}'
+		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","dest":31299,"xver":1}'
 
 		getClients "${configPath}../tmp/05_VMess_WS_inbounds.json" "${addClientsStatus}"
 
@@ -2532,8 +2526,7 @@ EOF
     "security": "none",
     "wsSettings": {
       "acceptProxyProtocol": true,
-      "path": "/${customPath}",
-	  "path": "/${customPath1}"
+      "path": "/${customPath}"
     }
   }
 }
@@ -2919,7 +2912,7 @@ EOF
 
 	# VMess_WS
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","path":"/'${customPath1}'","dest":31299,"xver":1}'
+		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","dest":31299,"xver":1}'
 		getClients "${configPath}../tmp/05_VMess_WS_inbounds.json" "${addClientsStatus}"
 		cat <<EOF >/etc/v2ray-agent/xray/conf/05_VMess_WS_inbounds.json
 {
@@ -2935,7 +2928,7 @@ EOF
         "id": "${uuid}",
         "alterId": 0,
         "add": "${add}",
-        "email": "${domain}_${uuid}"
+        "email": "${domain}"
       }
     ]
   },
@@ -2944,8 +2937,7 @@ EOF
     "security": "none",
     "wsSettings": {
       "acceptProxyProtocol": true,
-      "path": "/${customPath}",
-	  "path": "/${customPath1}"
+      "path": "/${customPath}"
     }
   }
 }
