@@ -50,7 +50,7 @@
       "streamSettings": {
         "network": "ws",
         "wsSettings": {
-          "path": "/v2"
+          "path": "/worryfree"
         }
       }
     }
