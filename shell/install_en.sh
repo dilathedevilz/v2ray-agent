@@ -2475,9 +2475,10 @@ EOF
                 "clients": [
                     {
                         "password": "${uuid}",
-                        "email": "${domain}_${uuid}"
+                        "email": "${domain}"
                     }
                 ],
+				"udp": true,
                 "fallbacks": [
                     {
                         "dest": "31300"
@@ -2485,9 +2486,9 @@ EOF
                 ]
             },
             "streamSettings": {
-                "network": "grpc",
-                "grpcSettings": {
-                    "serviceName": "${customPath}trojangrpc"
+                "network": "ws",
+                "wsSettings": {
+                    "path": "/${customPath}"
                 }
             }
         }
@@ -2517,7 +2518,7 @@ EOF
         "id": "${uuid}",
         "alterId": 0,
         "add": "${add}",
-        "email": "${domain}_${uuid}"
+        "email": "${domain}"
       }
     ]
   },
@@ -2888,10 +2889,10 @@ EOF
                 "clients": [
                     {
                         "password": "${uuid}",
-                        "email": "${domain}_${uuid}"
+                        "email": "${domain}"
                     }
                 ],
-				"udp": true
+				"udp": true,
                 "fallbacks": [
                     {
                         "dest": "31300"
@@ -2901,7 +2902,7 @@ EOF
             "streamSettings": {
                 "network": "ws",
                 "wsSettings": {
-                    "path": "${customPath}"
+                    "path": "/${customPath}"
                 }
             }
         }
@@ -3061,7 +3062,7 @@ initTrojanGoConfig() {
     },
     "websocket": {
         "enabled": true,
-        "path": "/${customPath}tws",
+        "path": "/${customPath}",
         "host": "${domain}",
         "add":"${add}"
     },
