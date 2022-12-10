@@ -2517,7 +2517,7 @@ EOF
         "id": "${uuid}",
         "alterId": 0,
         "add": "${add}",
-        "email": "${domain}"
+        "email": "${domain}_${uuid}"
       }
     ]
   },
@@ -2891,6 +2891,7 @@ EOF
                         "email": "${domain}_${uuid}"
                     }
                 ],
+				"udp": true
                 "fallbacks": [
                     {
                         "dest": "31300"
@@ -2898,9 +2899,9 @@ EOF
                 ]
             },
             "streamSettings": {
-                "network": "grpc",
-                "grpcSettings": {
-                    "serviceName": "${customPath}trojangrpc"
+                "network": "ws",
+                "wsSettings": {
+                    "path": "${customPath}"
                 }
             }
         }
