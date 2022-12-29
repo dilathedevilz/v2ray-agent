@@ -24,7 +24,7 @@ checkSystem(){
     fi
     if [[ -z ${release} ]]
     then
-        echoContent red "本脚本不支持此系统，请将下方日志反馈给开发者"
+        echoContent red "This script does not support this system, please give feedback to the developer below"
         cat /etc/issue
         cat /proc/version
         exit 0;

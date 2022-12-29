@@ -11,8 +11,8 @@ then
     currentTime=`date +%s`
     stampDiff=`expr ${currentTime} - ${modifyTime}`
     minutes=`expr ${stampDiff} / 60`
-    status="正常"
-    reloadTime="暂无"
+    status="normal"
+    reloadTime="None for the time being"
     if [[ ! -z ${modifyTime} ]] && [[ ! -z ${currentTime} ]] && [[ ! -z ${stampDiff} ]] && [[ ! -z ${minutes} ]] && [[ ${minutes} -lt '120' ]]
     then
         nginx -s stop
@@ -20,7 +20,7 @@ then
         nginx
         reloadTime=`date -d @${currentTime} +"%F %H:%M:%S"`
     fi
-    echo "域名：${domain}，modifyTime:"`date -d @${modifyTime} +"%F %H:%M:%S"`,"检查时间:"`date -d @${currentTime} +"%F %H:%M:%S"`,"上次生成证书的时:"`expr ${minutes} / 1440`"天前","证书状态："${status},"重新生成日期："${reloadTime} >> /tmp/tls/tls.log
+    echo "domain name：${domain}，modifyTime:"`date -d @${modifyTime} +"%F %H:%M:%S"`,"检查时间:"`date -d @${currentTime} +"%F %H:%M:%S"`,"The last time the certificate was generated:"`expr ${minutes} / 1440`"Days ago","Certificate status："${status},"Re -generate date："${reloadTime} >> /tmp/tls/tls.log
 else
-    echo '无法找到证书路径' >> /tmp/tls/tls.log
+    echo 'Can't find the certificate path' >> /tmp/tls/tls.log
 fi

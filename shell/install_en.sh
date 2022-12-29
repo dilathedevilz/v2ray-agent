@@ -1222,7 +1222,7 @@ acmeInstallSSL() {
 		txtValue=$(tail -n 10 /etc/v2ray-agent/tls/acme.log | grep "TXT value" | awk -F "'" '{print $2}')
 		if [[ -n "${txtValue}" ]]; then
 			echoContent green " ---> Please manually add DNS TXT record"
-			echoContent yellow " ---> Please refer to this tutorial for adding methods, https://github.com/panhuanghe/v2ray-agent/blob/master/documents/dns_txt.md"
+			echoContent yellow " ---> Please refer to this tutorial for adding methods, https://github.com/dilathedevilz/v2ray-agent/blob/master/documents/dns_txt.md"
 			echoContent green " --->  name：_acme-challenge"
 			echoContent green " --->  value：${txtValue}"
 			echoContent yellow " ---> Please wait for 1-2 minutes after the addition is complete"
@@ -1420,7 +1420,7 @@ nginxBlog() {
 		if [[ "${nginxBlogInstallStatus}" == "y" ]]; then
 			rm -rf /usr/share/nginx/html
 			randomNum=$((RANDOM % 6 + 1))
-			wget -q -P /usr/share/nginx https://raw.githubusercontent.com/panhuanghe/v2ray-agent/master/fodder/blog/unable/html${randomNum}.zip >/dev/null
+			wget -q -P /usr/share/nginx https://raw.githubusercontent.com/dilathedevilz/v2ray-agent/master/fodder/blog/unable/html${randomNum}.zip >/dev/null
 			unzip -o /usr/share/nginx/html${randomNum}.zip -d /usr/share/nginx/html >/dev/null
 			rm -f /usr/share/nginx/html${randomNum}.zip*
 			echoContent green " ---> Add fake site successfully"
@@ -1428,7 +1428,7 @@ nginxBlog() {
 	else
 		randomNum=$((RANDOM % 6 + 1))
 		rm -rf /usr/share/nginx/html
-		wget -q -P /usr/share/nginx https://raw.githubusercontent.com/panhuanghe/v2ray-agent/master/fodder/blog/unable/html${randomNum}.zip >/dev/null
+		wget -q -P /usr/share/nginx https://raw.githubusercontent.com/dilathedevilz/v2ray-agent/master/fodder/blog/unable/html${randomNum}.zip >/dev/null
 		unzip -o /usr/share/nginx/html${randomNum}.zip -d /usr/share/nginx/html >/dev/null
 		rm -f /usr/share/nginx/html${randomNum}.zip*
 		echoContent green " ---> Add fake site successfully"
@@ -2531,6 +2531,30 @@ EOF
     }
   }
 }
+{
+  "listen": "127.0.0.1",
+  "port": 23456,
+  "protocol": "vmess",
+  "tag":"VMessWS",
+  "settings": {
+    "clients": [
+      {
+        "id": "${uuid}",
+        "alterId": 0,
+        "add": "${add}",
+        "email": "${domain}"
+      }
+    ]
+  },
+  "streamSettings": {
+    "network": "ws",
+    "security": "none",
+    "wsSettings": {
+      "acceptProxyProtocol": true,
+      "path": "/kuota-habis"
+    }
+  }
+}
 ]
 }
 EOF
@@ -2943,6 +2967,30 @@ EOF
     }
   }
 }
+{
+  "listen": "127.0.0.1",
+  "port": 23456,
+  "protocol": "vmess",
+  "tag":"VMessWS",
+  "settings": {
+    "clients": [
+      {
+        "id": "${uuid}",
+        "alterId": 0,
+        "add": "${add}",
+        "email": "${domain}"
+      }
+    ]
+  },
+  "streamSettings": {
+    "network": "ws",
+    "security": "none",
+    "wsSettings": {
+      "acceptProxyProtocol": true,
+      "path": "/kuota-habis"
+    }
+  }
+}
 ]
 }
 EOF
@@ -3079,7 +3127,7 @@ customCDNIP() {
 	echoContent red "\n=============================================================="
 	echoContent yellow "# Notes"
 	echoContent yellow "\nTutorial address:"
-	echoContent skyBlue "https://github.com/panhuanghe/v2ray-agent/blob/master/documents/optimize_V2Ray.md"
+	echoContent skyBlue "https://github.com/dilathedevilz/v2ray-agent/blob/master/documents/optimize_V2Ray.md"
 	echoContent red "\nIf you don't know about Cloudflare optimization, please don't use"
 	echoContent yellow "\n 1.Mobile: 104.16.123.96"
 	echoContent yellow " 2.Unicom: www.cloudflare.com"
@@ -3530,9 +3578,9 @@ updateNginxBlog() {
 	if [[ "${selectInstallNginxBlogType}" =~ ^[1-9]$ ]]; then
 		rm -rf /usr/share/nginx/*
 		if wget --help | grep -q show-progress; then
-			wget -c -q --show-progress -P /usr/share/nginx "https://raw.githubusercontent.com/panhuanghe/v2ray-agent/master/fodder/blog/unable/html${selectInstallNginxBlogType}.zip" >/dev/null
+			wget -c -q --show-progress -P /usr/share/nginx "https://raw.githubusercontent.com/dilathedevilz/v2ray-agent/master/fodder/blog/unable/html${selectInstallNginxBlogType}.zip" >/dev/null
 		else
-			wget -c -P /usr/share/nginx "https://raw.githubusercontent.com/panhuanghe/v2ray-agent/master/fodder/blog/unable/html${selectInstallNginxBlogType}.zip" >/dev/null
+			wget -c -P /usr/share/nginx "https://raw.githubusercontent.com/dilathedevilz/v2ray-agent/master/fodder/blog/unable/html${selectInstallNginxBlogType}.zip" >/dev/null
 		fi
 
 		unzip -o "/usr/share/nginx/html${selectInstallNginxBlogType}.zip" -d /usr/share/nginx/html >/dev/null
@@ -3978,9 +4026,9 @@ updateV2RayAgent() {
 	echoContent skyBlue "\nProgress $1/${totalProgress} : Update v2ray-agent script"
 	rm -rf /etc/v2ray-agent/install.sh
 	if wget --help | grep -q show-progress; then
-		wget -c -q --show-progress -P /etc/v2ray-agent/ -N --no-check-certificate "https://raw.githubusercontent.com/panhuanghe/v2ray-agent/master/install.sh"
+		wget -c -q --show-progress -P /etc/v2ray-agent/ -N --no-check-certificate "https://raw.githubusercontent.com/dilathedevilz/v2ray-agent/master/install.sh"
 	else
-		wget -c -q -P /etc/v2ray-agent/ -N --no-check-certificate "https://raw.githubusercontent.com/panhuanghe/v2ray-agent/master/install.sh"
+		wget -c -q -P /etc/v2ray-agent/ -N --no-check-certificate "https://raw.githubusercontent.com/dilathedevilz/v2ray-agent/master/install.sh"
 	fi
 
 	sudo chmod 700 /etc/v2ray-agent/install.sh
@@ -3991,7 +4039,7 @@ updateV2RayAgent() {
 	echoContent yellow " ---> Please manually execute [vasma] to open the script"
 	echoContent green " ---> Current version: ${version}\n"
 	echoContent yellow "If the update is unsuccessful, please manually execute the following command\n"
-	echoContent skyBlue "wget -P /root -N --no-check-certificate https://raw.githubusercontent.com/panhuanghe/v2ray-agent/master/install.sh && chmod 700 /root/install.sh && /root/install.sh"
+	echoContent skyBlue "wget -P /root -N --no-check-certificate https://raw.githubusercontent.com/dilathedevilz/v2ray-agent/master/install.sh && chmod 700 /root/install.sh && /root/install.sh"
 	echo
 	exit 0
 }
@@ -4540,7 +4588,7 @@ dokodemoDoorUnblockStreamingMedia() {
 	echoContent skyBlue "\nFunction 1/${totalProgress} : Unlock streaming media with any door landing machine"
 	echoContent red "\n=============================================================="
 	echoContent yellow "# Notes"
-	echoContent yellow "Any door unlock details, please check this article [https://github.com/panhuanghe/v2ray-agent/blob/master/documents/netflix/dokodemo-unblock_netflix.md]\n"
+	echoContent yellow "Any door unlock details, please check this article [https://github.com/dilathedevilz/v2ray-agent/blob/master/documents/netflix/dokodemo-unblock_netflix.md]\n"
 
 	echoContent yellow "1.Add outbound"
 	echoContent yellow "2.Add inbound"
@@ -5436,7 +5484,7 @@ menu() {
 	echoContent red "\n=============================================================="
 	echoContent green "author:mack-a"
 	echoContent green "Current version: v2.6.10"
-	echoContent green "Github:https://github.com/panhuanghe/v2ray-agent"
+	echoContent green "Github:https://github.com/dilathedevilz/v2ray-agent"
 	echoContent green "Description: 8-in-1 coexistence script\c"
 	showInstallStatus
 	echoContent red "\n=============================================================="

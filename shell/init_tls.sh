@@ -59,7 +59,7 @@ checkSystem(){
     fi
     if [[ -z ${release} ]]
     then
-        echoContent red "本脚本不支持此系统，请将下方日志反馈给开发者"
+        echoContent red "This script does not support this system, please give feedback to the developer below"
         cat /etc/issue
         cat /proc/version
         exit 0;
@@ -67,31 +67,31 @@ checkSystem(){
 }
 # 安装工具包
 installTools(){
-    echoColor yellow "更新"
+    echoColor yellow "renew"
     ${upgrade}
     if [[ -z `find /usr/bin/ -executable -name "socat"` ]]
     then
-        echoColor yellow "\nsocat未安装，安装中\n"
+        echoColor yellow "\nsocat Not installed, installed\n"
         ${installType} socat >/dev/null
-        echoColor green "socat安装完毕"
+        echoColor green "socat installation is complete"
     fi
-    echoColor yellow "\n检测是否安装Nginx"
+    echoColor yellow "\nDetect whether to install Nginx"
     if [[ -z `find /sbin/ -executable -name 'nginx'` ]]
     then
-        echoColor yellow "nginx未安装，安装中\n"
+        echoColor yellow "nginx Not installed, installed\n"
         ${installType} nginx >/dev/null
-        echoColor green "nginx安装完毕"
+        echoColor green "nginx Installed"
     else
-        echoColor green "nginx已安装\n"
+        echoColor green "nginx Installed\n"
     fi
-    echoColor yellow "检测是否安装acme.sh"
+    echoColor yellow "Detect whether to install acme.sh"
     if [[ -z `find ~/.acme.sh/ -name "acme.sh"` ]]
     then
-        echoColor yellow "\nacme.sh未安装，安装中\n"
+        echoColor yellow "\nacme.sh Not installed, installed\n"
         curl -s https://get.acme.sh | sh >/dev/null
-        echoColor green "acme.sh安装完毕\n"
+        echoColor green "acme.sh Installed\n"
     else
-        echoColor green "acme.sh已安装\n"
+        echoColor green "acme.sh Installed\n"
     fi
 
 }
@@ -99,7 +99,7 @@ installTools(){
 resetNginxConfig(){
     `cp -Rrf /tmp/mack-a/nginx/nginx.conf /etc/nginx/nginx.conf`
     rm -rf /etc/nginx/conf.d/5NX2O9XQKP.conf
-    echoColor green "\n恢复配置完毕"
+    echoColor green "\n recovery configuration is complete"
 }
 # 备份
 bakConfig(){
@@ -108,11 +108,11 @@ bakConfig(){
 }
 # 安装证书
 installTLS(){
-    echoColor yellow "请输入域名【例:blog.v2ray-agent.com】："
+    echoColor yellow "Please enter the domain name [Example:blog.v2ray-agent.com】："
     read domain
     if [[ -z ${domain} ]]
     then
-        echoColor red "域名未填写\n"
+        echoColor red "Domain name is not filled in\n"
         installTLS
     fi
     # 备份
@@ -135,14 +135,14 @@ installTLS(){
     else
         nginx
     fi
-    echoColor yellow "\n验证域名以及服务器是否可用"
+    echoColor yellow "\n Verify the domain name and whether the server is available"
     if [[ ! -z `curl -s ${domain}/test|grep 5NX2O9XQKP` ]]
     then
         ps -ef|grep -v grep|grep nginx|awk '{print $2}'|xargs kill -9
         sleep 0.5
-        echoColor green "服务可用，生成TLS中，请等待\n"
+        echoColor green "Service available, generate in TLS, please wait\n"
     else
-        echoColor red "服务不可用请检测dns配置是否正确"
+        echoColor red "If the service is not available, please detect whether the DNS configuration is correct"
         # 恢复备份
         resetNginxConfig
         exit 0;
@@ -151,17 +151,17 @@ installTLS(){
     ~/.acme.sh/acme.sh --installcert -d ${domain} --fullchainpath /tmp/mack-a/nginx/${domain}.crt --keypath /tmp/mack-a/nginx/${domain}.key --ecc >/dev/null
     if [[ -z `cat /tmp/mack-a/nginx/${domain}.key` ]]
     then
-        echoColor red "证书key生成失败，请重新运行"
+        echoColor red "Certificate Key failed, please reorganize"
         resetNginxConfig
         exit
     elif [[ -z `cat /tmp/mack-a/nginx/${domain}.crt` ]]
     then
-        echoColor red "证书crt生成失败，请重新运行"
+        echoColor red "Certificate CRT generating failure, please reorganize"
         resetNginxConfig
         exit
     fi
-    echoColor green "证书生成成功"
-    echoColor green "证书目录/tmp/mack-a/nginx"
+    echoColor green "Successful certificate"
+    echoColor green "Certificate Directory /tmp/mack-a/nginx"
     ls /tmp/mack-a/nginx
 
     resetNginxConfig
@@ -173,28 +173,28 @@ installTLS(){
 
 init(){
     echoColor red "\n=============================="
-    echoColor yellow "此脚本注意事项"
-    echoColor green "   1.会安装依赖所需依赖"
-    echoColor green "   2.会把Nginx配置文件备份"
-    echoColor green "   3.会安装Nginx、acme.sh，如果已安装则使用已经存在的"
-    echoColor green "   4.安装完毕或者安装失败会自动恢复备份，请不要手动关闭脚本"
-    echoColor green "   5.执行期间请不要重启机器"
-    echoColor green "   6.备份文件和证书文件都在/tmp下面，请注意留存"
-    echoColor green "   7.如果多次执行则将上次生成备份和生成的证书强制覆盖"
-    echoColor green "   8.证书默认ec-256"
-    echoColor green "   9.下个版本会加入通配符证书生成[todo]"
-    echoColor green "   10.可以生成多个不同域名的证书[包含子域名]，具体速率请查看[https://letsencrypt.org/zh-cn/docs/rate-limits/]"
-    echoColor green "   11.兼容Centos、Ubuntu、Debian"
+    echoColor yellow "Precautions for this script"
+    echoColor green "   1.Will install dependencies that need dependencies"
+    echoColor green "   2.Will back up nginx configuration files"
+    echoColor green "   3.Will install nginx, acme.SH, if it is installed, use the existing existence"
+    echoColor green "   4.After the installation or failure, the backup will be automatically restored, please do not turn off the script manually"
+    echoColor green "   5.Please do not restart the machine during execution"
+    echoColor green "   6.Backup documents and certificates are all here/tmp below, please pay attention to retain"
+    echoColor green "   7.If it is executed multiple times, the last -time backup and generated certificates are forced to cover"
+    echoColor green "   8.Certificate default ec-256"
+    echoColor green "   9.The next version will be added with a formal symbol certificate to generate[todo]"
+    echoColor green "   10.You can generate a certificate of multiple different domain names[Including sub -domain name]Please view the specific rate[https://letsencrypt.org/zh-cn/docs/rate-limits/]"
+    echoColor green "   11.Compatible with CentOS, Ubuntu, Debian"
     echoColor green "   12.Github[https://github.com/mack-a]"
     echoColor red "=============================="
-    echoColor yellow "请输入[y]执行脚本，[任意]结束:"
+    echoColor yellow "Please enter [y] execute script, [enter] end:"
     read isExecStatus
     if [[ ${isExecStatus} = "y" ]]
     then
         installTools
         installTLS
     else
-        echoColor green "欢迎下次使用"
+        echoColor green "Welcome to use next time"
         exit
     fi
 }
