@@ -2500,7 +2500,7 @@ EOF
 
 	# VMess_WS
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","dest":31299,"xver":1}'
+		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","dest":31299,"xver":1},{"path":"/vmessws","dest":31299,"xver":1}'
 
 		getClients "${configPath}../tmp/05_VMess_WS_inbounds.json" "${addClientsStatus}"
 
@@ -2938,7 +2938,7 @@ EOF
 
 	# VMess_WS
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","dest":31299,"xver":1}'
+		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","dest":31299,"xver":1},{"path":"/vmessws'","dest":31299,"xver":1}'
 		getClients "${configPath}../tmp/05_VMess_WS_inbounds.json" "${addClientsStatus}"
 		cat <<EOF >/etc/v2ray-agent/xray/conf/05_VMess_WS_inbounds.json
 {
