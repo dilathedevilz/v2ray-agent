@@ -2530,7 +2530,7 @@ EOF
       "path": "/${customPath}"
     }
   }
-}
+},
 {
   "listen": "127.0.0.1",
   "port": 23456,
@@ -2971,7 +2971,7 @@ EOF
   "listen": "127.0.0.1",
   "port": 23456,
   "protocol": "vmess",
-  "tag":"VMessWS",
+  "tag":"VMessKH",
   "settings": {
     "clients": [
       {
