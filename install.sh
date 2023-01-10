@@ -455,6 +455,10 @@ readConfigHostPathUUID() {
 			currentPath=$(echo "${path}" | awk -F "[t][c][p]" '{print $1}')
 		elif [[ $(echo "${fallback}" | jq -r .dest) == 31299 ]]; then
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
+		elif [[ $(echo "${fallback}" | jq -r .dest) == 31313 ]]; then
+			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
+	    elif [[ $(echo "${fallback}" | jq -r .dest) == 23456 ]]; then
+			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		fi
 		# try to read alpn h2 Path
 
@@ -2500,7 +2504,7 @@ EOF
 
 	# VMess_WS
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","dest":31299,"xver":1}'
+		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","dest":31299,"xver":1},{"path":"/vmessws","dest":23456,"xver":1}'
 
 		getClients "${configPath}../tmp/05_VMess_WS_inbounds.json" "${addClientsStatus}"
 
@@ -2535,7 +2539,7 @@ EOF
   "listen": "127.0.0.1",
   "port": 23456,
   "protocol": "vmess",
-  "tag":"VMessWS",
+  "tag":"VMessKH",
   "settings": {
     "clients": [
       {
@@ -2551,7 +2555,7 @@ EOF
     "security": "none",
     "wsSettings": {
       "acceptProxyProtocol": true,
-      "path": "/kuota-habis"
+      "path": "/vmessws"
     }
   }
 }
@@ -2967,11 +2971,23 @@ EOF
     }
   }
 }
+]
+}
+EOF
+		addClients "/etc/v2ray-agent/xray/conf/05_VMess_WS_inbounds.json" "${addClientsStatus}"
+	fi
+# VMess_WF
+	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
+		fallbacksList=${fallbacksList}',{"path":"/worryfree","dest":31313,"xver":1}'
+		getClients "${configPath}../tmp/05_VMess_WF_inbounds.json" "${addClientsStatus}"
+		cat <<EOF >/etc/v2ray-agent/xray/conf/05_VMess_WF_inbounds.json
+{
+"inbounds":[
 {
   "listen": "127.0.0.1",
-  "port": 23456,
+  "port": 31313,
   "protocol": "vmess",
-  "tag":"VMessKH",
+  "tag":"VMessWF",
   "settings": {
     "clients": [
       {
@@ -2987,16 +3003,15 @@ EOF
     "security": "none",
     "wsSettings": {
       "acceptProxyProtocol": true,
-      "path": "/kuota-habis"
+      "path": "/worryfree"
     }
   }
 }
 ]
 }
 EOF
-		addClients "/etc/v2ray-agent/xray/conf/05_VMess_WS_inbounds.json" "${addClientsStatus}"
+		addClients "/etc/v2ray-agent/xray/conf/05_VMess_WF_inbounds.json" "${addClientsStatus}"
 	fi
-
 	if echo "${selectCustomInstallType}" | grep -q 5 || [[ "$1" == "all" ]]; then
 		getClients "${configPath}../tmp/06_VLESS_gRPC_inbounds.json" "${addClientsStatus}"
 		cat <<EOF >/etc/v2ray-agent/xray/conf/06_VLESS_gRPC_inbounds.json
