@@ -457,8 +457,6 @@ readConfigHostPathUUID() {
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		elif [[ $(echo "${fallback}" | jq -r .dest) == 31313 ]]; then
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
-	    elif [[ $(echo "${fallback}" | jq -r .dest) == 23456 ]]; then
-			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		fi
 		# try to read alpn h2 Path
 
@@ -946,7 +944,7 @@ updateRedirectNginxConf() {
 	fi
 	cat <<EOF >${nginxConfigPath}alone.conf
 server {
-	listen 80;
+	listen 81;
 	server_name ${domain};
 	return 302 https://${redirectDomain};
 }
@@ -1376,8 +1374,8 @@ initNginxConfig() {
 
 	cat <<EOF >${nginxConfigPath}alone.conf
 server {
-    listen 80;
-    listen [::]:80;
+    listen 81;
+    listen [::]:81;
     server_name ${domain};
     root /usr/share/nginx/html;
     location ~ /.well-known {allow all;}
@@ -2939,7 +2937,71 @@ EOF
 EOF
 		addClients "/etc/v2ray-agent/xray/conf/04_trojan_gRPC_inbounds.json" "${addClientsStatus}"
 	fi
-
+	# NTLS
+	if echo "${selectCustomInstallType}" | grep -q 2 || [[ "$1" == "all" ]]; then
+		if ! echo "${selectCustomInstallType}" | grep -q 5 && [[ -n ${selectCustomInstallType} ]]; then
+			fallbacksList=${fallbacksList//31302/31304}
+		fi
+		getClients "${configPath}../tmp/NTLS.json" "${addClientsStatus}"
+		cat <<EOF >/etc/v2ray-agent/xray/conf/NTLS.json
+{
+    "inbounds": [
+        {
+            "port": 80,
+            "protocol": "trojan",
+            "tag": "trojanNTLS",
+            "settings": {
+                "clients": [
+                    {
+                        "password": "${uuid}",
+						"flow": "xtls-rprx-direct",
+                        "email": "${domain}"
+                    }
+                ],
+				"udp": true,
+                "fallbacks": [
+                    {
+            			"dest": 8000,
+            			"xver": 1
+          			},
+          			{
+            			"path": "/worryfree",
+            			"dest": 31313,
+			            "xver": 1
+          			},
+          			{
+            			"path": "/vmessws",
+            			"dest": 31299,
+            			"xver": 1
+		          	},
+          			{
+            			"path": "/vlessws",
+            			"dest": 31297,
+            			"xver": 1
+          			},
+          			{
+            			"path": "/trojanws",
+            			"dest": 60002,
+            			"xver": 1
+          			}
+                ]
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "none"
+            }
+        }
+    ],
+  	"outbounds": [
+      {
+          "protocol": "freedom",
+          "tag": "direct"
+      }
+  ]
+}
+EOF
+		addClients "/etc/v2ray-agent/xray/conf/NTLS.json" "${addClientsStatus}"
+	fi
 	# VMess_WS
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
 		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","dest":31299,"xver":1}'
