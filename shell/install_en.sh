@@ -1374,8 +1374,8 @@ initNginxConfig() {
 
 	cat <<EOF >${nginxConfigPath}alone.conf
 server {
-    listen 81;
-    listen [::]:81;
+    listen 80;
+    listen [::]:80;
     server_name ${domain};
     root /usr/share/nginx/html;
     location ~ /.well-known {allow all;}
