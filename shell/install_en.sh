@@ -457,8 +457,6 @@ readConfigHostPathUUID() {
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		elif [[ $(echo "${fallback}" | jq -r .dest) == 31313 ]]; then
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
-	    elif [[ $(echo "${fallback}" | jq -r .dest) == 23456 ]]; then
-			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		fi
 		# try to read alpn h2 Path
 
@@ -1376,8 +1374,8 @@ initNginxConfig() {
 
 	cat <<EOF >${nginxConfigPath}alone.conf
 server {
-    listen 80;
-    listen [::]:80;
+    listen 81;
+    listen [::]:81;
     server_name ${domain};
     root /usr/share/nginx/html;
     location ~ /.well-known {allow all;}
