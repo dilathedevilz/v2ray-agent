@@ -2958,7 +2958,6 @@ EOF
                         "email": "${domain}"
                     }
                 ],
-				"udp": true,
                 "fallbacks": [
                     {
             			"dest": 8000,
