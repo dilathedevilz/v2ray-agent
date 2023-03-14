@@ -557,7 +557,7 @@ showInstallStatus() {
 		fi
 
 		if echo ${currentInstallProtocolType} | grep -q 3; then
-			echoContent yellow "VMess+WS[TLS] \c"
+			echoContent yellow "VMess+WS+GRPC[TLS] \c"
 		fi
 
 		if echo ${currentInstallProtocolType} | grep -q 4; then
