@@ -457,7 +457,7 @@ readConfigHostPathUUID() {
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		elif [[ $(echo "${fallback}" | jq -r .dest) == 31313 ]]; then
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
-		elif [[ $(echo "${fallback}" | jq -r .dest) == 31303 ]]; then
+		elif [[ $(echo "${fallback}" | jq -r .dest) == 31314 ]]; then
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		fi
 		# try to read alpn h2 Path
@@ -2889,7 +2889,7 @@ EOF
 		"security": "none",
 		"wsSettings": {
 		  "acceptProxyProtocol": true,
-		  "path": "/${customPath}ws"
+		  "path": "/vlessws"
 		}
 	  }
 	}
@@ -2930,7 +2930,7 @@ EOF
             "streamSettings": {
                 "network": "ws",
                 "wsSettings": {
-                    "path": "/${customPath}"
+                    "path": "/trojanws"
                 }
             }
         }
@@ -2973,6 +2973,11 @@ EOF
           			{
             			"path": "/vmessws",
             			"dest": 31299,
+            			"xver": 1
+		          	},
+					{
+            			"path": "/vmess-grpc",
+            			"dest": 31314,
             			"xver": 1
 		          	},
           			{
@@ -3030,7 +3035,7 @@ EOF
     "security": "none",
     "wsSettings": {
       "acceptProxyProtocol": true,
-      "path": "/${customPath}"
+      "path": "/vmessws"
     }
   }
 }
@@ -3077,16 +3082,16 @@ EOF
 	fi
 	# VMess_Grpc
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"/vmess-grpc","dest":31303,"xver":1}'
+		fallbacksList=${fallbacksList}',{"path":"/vmess-grpc","dest":31314,"xver":1}'
 		getClients "${configPath}../tmp/05_VMess_GRPC_inbounds.json" "${addClientsStatus}"
 		cat <<EOF >/etc/v2ray-agent/xray/conf/05_VMess_GRPC_inbounds.json
 {
 "inbounds":[
 {
   "listen": "127.0.0.1",
-  "port": 31303,
+  "port": 31314,
   "protocol": "vmess",
-  "tag":"VMessWF",
+  "tag":"VMessGrpc",
   "settings": {
     "clients": [
       {
