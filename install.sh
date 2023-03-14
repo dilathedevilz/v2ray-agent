@@ -2970,6 +2970,11 @@ EOF
             			"dest": 31313,
 			            "xver": 1
           			},
+					{
+            			"path": "vmess-grpc",
+            			"dest": 31314,
+			            "xver": 1
+          			},
           			{
             			"path": "/vmessws",
             			"dest": 31299,
