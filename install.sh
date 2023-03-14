@@ -2970,11 +2970,6 @@ EOF
             			"dest": 31313,
 			            "xver": 1
           			},
-					{
-            			"path": "vmess-grpc",
-            			"dest": 31314,
-			            "xver": 1
-          			},
           			{
             			"path": "/vmessws",
             			"dest": 31299,
@@ -3046,14 +3041,14 @@ EOF
 	fi
 # VMess_GRPC
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"vmess-grpc'","dest":31314,"xver":1}'
-		getClients "${configPath}../tmp/05_VMess_WS_inbounds.json" "${addClientsStatus}"
-		cat <<EOF >/etc/v2ray-agent/xray/conf/05_VMess_WS_inbounds.json
+		fallbacksList=${fallbacksList}',{"path":"vmess-grpc","dest":31314,"xver":1}'
+		getClients "${configPath}../tmp/05_VMess_Grpc_inbounds.json" "${addClientsStatus}"
+		cat <<EOF >/etc/v2ray-agent/xray/conf/05_VMess_Grpc_inbounds.json
 {
 "inbounds":[
 {
   "listen": "127.0.0.1",
-  "port": 31314,
+  "port": 31299,
   "protocol": "vmess",
   "tag":"VMessGrpc",
   "settings": {
@@ -3078,7 +3073,7 @@ EOF
 ]
 }
 EOF
-		addClients "/etc/v2ray-agent/xray/conf/05_VMess_WS_inbounds.json" "${addClientsStatus}"
+		addClients "/etc/v2ray-agent/xray/conf/05_VMess_Grpc_inbounds.json" "${addClientsStatus}"
 	fi
 # VMess_WF
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
