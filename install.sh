@@ -457,8 +457,6 @@ readConfigHostPathUUID() {
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		elif [[ $(echo "${fallback}" | jq -r .dest) == 31313 ]]; then
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
-		elif [[ $(echo "${fallback}" | jq -r .dest) == 31314 ]]; then
-			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		fi
 		# try to read alpn h2 Path
 
@@ -2970,11 +2968,6 @@ EOF
             			"dest": 31313,
 			            "xver": 1
           			},
-					{
-            			"path": "vmess-grpc",
-            			"dest": 31314,
-			            "xver": 1
-          			},
           			{
             			"path": "/vmessws",
             			"dest": 31299,
@@ -3035,7 +3028,7 @@ EOF
     "security": "none",
     "wsSettings": {
       "acceptProxyProtocol": true,
-      "path": "/${customPath}ws"
+      "path": "/${customPath}"
     }
   }
 }
@@ -3043,42 +3036,6 @@ EOF
 }
 EOF
 		addClients "/etc/v2ray-agent/xray/conf/05_VMess_WS_inbounds.json" "${addClientsStatus}"
-	fi
-# VMess_Grpc
-	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"/'${customPath}'","dest":31314,"xver":1}'
-		getClients "${configPath}../tmp/05_VMess_grpc_inbounds.json" "${addClientsStatus}"
-		cat <<EOF >/etc/v2ray-agent/xray/conf/05_VMess_Grpc_inbounds.json
-{
-"inbounds":[
-{
-  "listen": "127.0.0.1",
-  "port": 31314,
-  "protocol": "vmess",
-  "tag":"VMessGrpc",
-  "settings": {
-    "clients": [
-      {
-        "id": "${uuid}",
-        "alterId": 0,
-        "add": "${add}",
-        "email": "${domain}"
-      }
-    ]
-  },
-  "streamSettings": {
-    "network": "grpc",
-    "security": "none",
-    "wsSettings": {
-      "acceptProxyProtocol": true,
-      "serviceName": "/${customPath}grpc"
-    }
-  }
-}
-]
-}
-EOF
-		addClients "/etc/v2ray-agent/xray/conf/05_VMess_Grpc_inbounds.json" "${addClientsStatus}"
 	fi
 # VMess_WF
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then

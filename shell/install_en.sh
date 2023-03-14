@@ -457,8 +457,6 @@ readConfigHostPathUUID() {
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		elif [[ $(echo "${fallback}" | jq -r .dest) == 31313 ]]; then
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
-		elif [[ $(echo "${fallback}" | jq -r .dest) == 31314 ]]; then
-			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		fi
 		# try to read alpn h2 Path
 
@@ -556,7 +554,7 @@ showInstallStatus() {
 		fi
 
 		if echo ${currentInstallProtocolType} | grep -q 3; then
-			echoContent yellow "VMess+WS+GRPC[TLS] \c"
+			echoContent yellow "VMess+WS[TLS] \c"
 		fi
 
 		if echo ${currentInstallProtocolType} | grep -q 4; then
@@ -2889,7 +2887,7 @@ EOF
 		"security": "none",
 		"wsSettings": {
 		  "acceptProxyProtocol": true,
-		  "path": "/vlessws"
+		  "path": "/${customPath}ws"
 		}
 	  }
 	}
@@ -2930,7 +2928,7 @@ EOF
             "streamSettings": {
                 "network": "ws",
                 "wsSettings": {
-                    "path": "/trojanws"
+                    "path": "/${customPath}"
                 }
             }
         }
@@ -2973,11 +2971,6 @@ EOF
           			{
             			"path": "/vmessws",
             			"dest": 31299,
-            			"xver": 1
-		          	},
-					{
-            			"path": "/vmess-grpc",
-            			"dest": 31314,
             			"xver": 1
 		          	},
           			{
@@ -3035,7 +3028,7 @@ EOF
     "security": "none",
     "wsSettings": {
       "acceptProxyProtocol": true,
-      "path": "/vmessws"
+      "path": "/${customPath}"
     }
   }
 }
@@ -3079,43 +3072,6 @@ EOF
 }
 EOF
 		addClients "/etc/v2ray-agent/xray/conf/05_VMess_WF_inbounds.json" "${addClientsStatus}"
-	fi
-	# VMess_Grpc
-	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"/vmess-grpc","dest":31314,"xver":1}'
-		getClients "${configPath}../tmp/05_VMess_GRPC_inbounds.json" "${addClientsStatus}"
-		cat <<EOF >/etc/v2ray-agent/xray/conf/05_VMess_GRPC_inbounds.json
-{
-"inbounds":[
-{
-  "listen": "127.0.0.1",
-  "port": 31314,
-  "protocol": "vmess",
-  "tag":"VMessGrpc",
-  "settings": {
-    "clients": [
-      {
-        "id": "${uuid}",
-        "alterId": 0,
-        "add": "${add}",
-        "email": "${domain}"
-      }
-    ]
-  },
-  "streamSettings": {
-    "network": "grpc",
-    "security": "none",
-    "grpcSettings": {
-      "acceptProxyProtocol": true,
-      "serviceName": "vmess-grpc",
-	  "multiMode": true
-    }
-  }
-}
-]
-}
-EOF
-		addClients "/etc/v2ray-agent/xray/conf/05_VMess_GRPC_inbounds.json" "${addClientsStatus}"
 	fi
 	if echo "${selectCustomInstallType}" | grep -q 5 || [[ "$1" == "all" ]]; then
 		getClients "${configPath}../tmp/06_VLESS_gRPC_inbounds.json" "${addClientsStatus}"
@@ -5205,7 +5161,7 @@ customV2RayInstall() {
 	echoContent yellow "0.VLESS+TLS/XTLS+TCP"
 	echoContent yellow "1.VLESS+TLS+WS[CDN]"
 	echoContent yellow "2.Trojan+TLS+gRPC[CDN]"
-	echoContent yellow "3.VMess+TLS+WS+GRPC[CDN]"
+	echoContent yellow "3.VMess+TLS+WS[CDN]"
 	echoContent yellow "4.Trojan"
 	echoContent yellow "5.VLESS+TLS+gRPC[CDN]"
 	read -r -p "Please select [multiple choices], [eg: 123]:" selectCustomInstallType
@@ -5254,7 +5210,7 @@ customXrayInstall() {
 	echoContent yellow "0.VLESS+TLS/XTLS+TCP"
 	echoContent yellow "1.VLESS+TLS+WS[CDN]"
 	echoContent yellow "2.Trojan+TLS+gRPC[CDN]"
-	echoContent yellow "3.VMess+TLS+WS+GRPC[CDN]"
+	echoContent yellow "3.VMess+TLS+WS[CDN]"
 	echoContent yellow "4.Trojan"
 	echoContent yellow "5.VLESS+TLS+gRPC[CDN]"
 	read -r -p "Please select [multiple choices], [eg: 123]:" selectCustomInstallType
