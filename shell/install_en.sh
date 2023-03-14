@@ -483,7 +483,6 @@ readConfigHostPathUUID() {
 		else
 			currentDefaultPort=$(jq -r .inbounds[0].port ${configPath}${frontingType}.json)
 		fi
-
 	fi
 	if [[ "${coreInstallType}" == "1" ]]; then
 		currentHost=$(jq -r .inbounds[0].streamSettings.xtlsSettings.certificates[0].certificateFile ${configPath}${frontingType}.json | awk -F '[t][l][s][/]' '{print $2}' | awk -F '[.][c][r][t]' '{print $1}')
