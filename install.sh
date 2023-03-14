@@ -457,8 +457,6 @@ readConfigHostPathUUID() {
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		elif [[ $(echo "${fallback}" | jq -r .dest) == 31313 ]]; then
 			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
-	    elif [[ $(echo "${fallback}" | jq -r .dest) == 31314 ]]; then
-			currentPath=$(echo "${path}" | awk -F "[v][w][s]" '{print $1}')
 		fi
 		# try to read alpn h2 Path
 
@@ -2970,11 +2968,6 @@ EOF
             			"dest": 31313,
 			            "xver": 1
           			},
-					{
-            			"path": "vmess-grpc",
-            			"dest": 31314,
-			            "xver": 1
-          			},
           			{
             			"path": "/vmessws",
             			"dest": 31299,
@@ -3043,42 +3036,6 @@ EOF
 }
 EOF
 		addClients "/etc/v2ray-agent/xray/conf/05_VMess_WS_inbounds.json" "${addClientsStatus}"
-	fi
-# VMess_GRPC
-	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
-		fallbacksList=${fallbacksList}',{"path":"vmess-grpc","dest":31314,"xver":1}'
-		getClients "${configPath}../tmp/05_VMess_Grpc_inbounds.json" "${addClientsStatus}"
-		cat <<EOF >/etc/v2ray-agent/xray/conf/05_VMess_Grpc_inbounds.json
-{
-"inbounds":[
-{
-  "listen": "127.0.0.1",
-  "port": 31299,
-  "protocol": "vmess",
-  "tag":"VMessGrpc",
-  "settings": {
-    "clients": [
-      {
-        "id": "${uuid}",
-        "alterId": 0,
-        "add": "${add}",
-        "email": "${domain}"
-      }
-    ]
-  },
-  "streamSettings": {
-    "network": "grpc",
-    "security": "none",
-    "grpcSettings": {
-      "acceptProxyProtocol": true,
-      "serviceName": "vmess-grpc"
-    }
-  }
-}
-]
-}
-EOF
-		addClients "/etc/v2ray-agent/xray/conf/05_VMess_Grpc_inbounds.json" "${addClientsStatus}"
 	fi
 # VMess_WF
 	if echo "${selectCustomInstallType}" | grep -q 3 || [[ "$1" == "all" ]]; then
@@ -3281,7 +3238,15 @@ defaultBase64Code() {
 	subAccount=$(echo "${email}" | awk -F "[_]" '{print $1}')_$(echo "${id}_currentHost" | md5sum | awk '{print $1}')
 	if [[ "${type}" == "vlesstcp" ]]; then
 
-		
+		if [[ "${coreInstallType}" == "1" ]] && echo "${currentInstallProtocolType}" | grep -q 0; then
+			echoContent yellow " ---> General format (VLESS+TCP+TLS/xtls-rprx-direct)"
+			echoContent green "    vless://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=xtls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-direct#${email}\n"
+
+			echoContent yellow " ---> formatted plaintext (VLESS+TCP+TLS/xtls-rprx-direct)"
+			echoContent green "Protocol type: VLESS, address: ${currentHost}, port: ${currentDefaultPort}, user ID: ${id}, security: xtls, transmission method: tcp, flow: xtls-rprx-direct, account name: ${email}\n"
+			cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
+vless://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=xtls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-direct#${email}
+EOF
 			echoContent yellow " ---> QR code VLESS(VLESS+TCP+TLS/xtls-rprx-direct)"
 			echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vless%3A%2F%2F${id}%40${currentHost}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dxtls%26type%3Dtcp%26${currentHost}%3D${currentHost}%26headerType%3Dnone%26sni%3D${currentHost}%26flow%3Dxtls-rprx-direct%23${email}\n"
 
