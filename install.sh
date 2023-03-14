@@ -5200,7 +5200,7 @@ customV2RayInstall() {
 	echoContent yellow "0.VLESS+TLS/XTLS+TCP"
 	echoContent yellow "1.VLESS+TLS+WS[CDN]"
 	echoContent yellow "2.Trojan+TLS+gRPC[CDN]"
-	echoContent yellow "3.VMess+TLS+WS[CDN]"
+	echoContent yellow "3.VMess+TLS+WS+GRPC[CDN]"
 	echoContent yellow "4.Trojan"
 	echoContent yellow "5.VLESS+TLS+gRPC[CDN]"
 	read -r -p "Please select [multiple choices], [eg: 123]:" selectCustomInstallType
@@ -5249,7 +5249,7 @@ customXrayInstall() {
 	echoContent yellow "0.VLESS+TLS/XTLS+TCP"
 	echoContent yellow "1.VLESS+TLS+WS[CDN]"
 	echoContent yellow "2.Trojan+TLS+gRPC[CDN]"
-	echoContent yellow "3.VMess+TLS+WS[CDN]"
+	echoContent yellow "3.VMess+TLS+WS+GRPC[CDN]"
 	echoContent yellow "4.Trojan"
 	echoContent yellow "5.VLESS+TLS+gRPC[CDN]"
 	read -r -p "Please select [multiple choices], [eg: 123]:" selectCustomInstallType
